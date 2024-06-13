@@ -13,7 +13,9 @@ import db_objs.Transaction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+// Kelas utama GUI untuk aplikasi Dashboard (Class dan Object)
 public class DashboardAppGui extends JFrame {
+    // Komponen Swing dan objek database (Swing component, JDBC, MySQL DB)
     private JTable table;
     private DefaultTableModel model;
     private MyJDBC db;
@@ -21,19 +23,21 @@ public class DashboardAppGui extends JFrame {
     private JLabel totalUsersLabel;
     private JLabel totalNominalLabel;
 
+    // Konstruktor untuk menginisialisasi GUI (Constructor)
     public DashboardAppGui() {
         setTitle("Dashboard Admin");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        db = new MyJDBC();
+        db = new MyJDBC(); // Koneksi database (JDBC, MySQL DB)
 
-        // Panel Navigasi
+        // Panel Navigasi (Swing component)
         JPanel navPanel = new JPanel();
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
         navPanel.setBackground(new Color(33, 33, 33));
         navPanel.setPreferredSize(new Dimension(250, getHeight()));
 
+        // Logo (Swing component)
         ImageIcon logoIcon = new ImageIcon("lib/logo1.png");
         Image logoImage = logoIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         JLabel logoLabel = new JLabel(new ImageIcon(logoImage));
@@ -41,7 +45,7 @@ public class DashboardAppGui extends JFrame {
         logoLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         navPanel.add(logoLabel);
 
-        // Tombol Operasi CRUD
+        // Tombol CRUD (Swing component, CRUD)
         JButton createButton = new JButton("Menambah Data");
         JButton readButton = new JButton("Melihat Transaksi");
         JButton updateButton = new JButton("Mengubah Data");
@@ -61,7 +65,7 @@ public class DashboardAppGui extends JFrame {
         deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         refreshButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Set border radius and background color
+        // Set border radius dan warna latar belakang (Swing component)
         createButton.setBackground(new Color(70, 130, 180));
         readButton.setBackground(new Color(70, 130, 180));
         updateButton.setBackground(new Color(70, 130, 180));
@@ -92,7 +96,7 @@ public class DashboardAppGui extends JFrame {
 
         add(navPanel, BorderLayout.WEST);
 
-        // Panel Header
+        // Panel Header (Swing component)
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(33, 150, 243));
         JLabel headerLabel = new JLabel(" Dashboard Admin", JLabel.CENTER);
@@ -102,22 +106,22 @@ public class DashboardAppGui extends JFrame {
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel Konten
+        // Panel Konten (Swing component)
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Model Tabel
+        // Model Tabel (Swing component)
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 0; // Only the checkbox column is editable
+                return column == 0; // Hanya kolom checkbox yang dapat diedit
             }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 if (columnIndex == 0) {
-                    return Boolean.class; // Checkbox column
+                    return Boolean.class; // Kolom checkbox
                 }
                 return super.getColumnClass(columnIndex);
             }
@@ -134,7 +138,7 @@ public class DashboardAppGui extends JFrame {
         table.getTableHeader().setBackground(new Color(33, 150, 243));
         table.getTableHeader().setForeground(Color.WHITE);
 
-        // Alternating row colors
+        // Warna baris bergantian (Swing component)
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -155,7 +159,7 @@ public class DashboardAppGui extends JFrame {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(33, 150, 243), 2));
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add the new panel for database statistics
+        // Panel Statistik (Swing component)
         JPanel statsPanel = new JPanel(new GridLayout(1, 3));
         statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
@@ -171,7 +175,7 @@ public class DashboardAppGui extends JFrame {
 
         add(contentPanel, BorderLayout.CENTER);
 
-        // Action Listeners untuk Tombol CRUD
+        // Action Listeners untuk Tombol CRUD (Listener interface, Action event)
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CreateUserDialog createUserDialog = new CreateUserDialog(null, "Create User", true);
@@ -236,6 +240,7 @@ public class DashboardAppGui extends JFrame {
         setVisible(true);
     }
 
+    // Mendapatkan baris yang dipilih (Method)
     private int getSelectedRow() {
         for (int i = 0; i < model.getRowCount(); i++) {
             if ((Boolean) model.getValueAt(i, 0)) {
@@ -245,6 +250,7 @@ public class DashboardAppGui extends JFrame {
         return -1;
     }
 
+    // Memuat data dari database (Method, CRUD)
     private void loadData() {
         ArrayList<User> users = db.getAllUsers();
         model.setRowCount(0); // Menghapus data yang ada
@@ -253,6 +259,7 @@ public class DashboardAppGui extends JFrame {
         }
     }
 
+    // Memuat statistik dari database (Method, CRUD)
     private void loadStats() {
         int totalTransactions = db.getTotalTransactions();
         int totalUsers = db.getTotalUsers();
@@ -263,12 +270,14 @@ public class DashboardAppGui extends JFrame {
         totalNominalLabel.setText("Total Nominal: " + totalNominal);
     }
 
+    // Kelas untuk dialog update user (Inner class, Swing component)
     class UpdateDialog extends JDialog {
         private JTextField usernameField;
         private JTextField balanceField;
         private JTextField passwordField;
         private JButton saveButton;
 
+        // Konstruktor untuk dialog update user (Constructor)
         public UpdateDialog(Frame owner, String title, boolean modal, int userId) {
             super(owner, title, modal);
             setSize(300, 200);
@@ -308,12 +317,14 @@ public class DashboardAppGui extends JFrame {
         }
     }
 
+    // Kelas untuk dialog create user (Inner class, Swing component)
     class CreateUserDialog extends JDialog {
         private JTextField usernameField;
         private JTextField balanceField;
         private JTextField passwordField;
         private JButton saveButton;
 
+        // Konstruktor untuk dialog create user (Constructor)
         public CreateUserDialog(Frame owner, String title, boolean modal) {
             super(owner, title, modal);
             setSize(300, 200);
@@ -346,10 +357,12 @@ public class DashboardAppGui extends JFrame {
         }
     }
 
+    // Kelas untuk dialog transaksi (Inner class, Swing component)
     class TransactionDialog extends JDialog {
         private JTable transactionTable;
         private DefaultTableModel transactionModel;
 
+        // Konstruktor untuk dialog transaksi (Constructor)
         public TransactionDialog(Frame owner, String title, boolean modal, int userId) {
             super(owner, title, modal);
             setSize(400, 300);
@@ -368,9 +381,10 @@ public class DashboardAppGui extends JFrame {
             loadTransactionData(userId);
         }
 
+        // Memuat data transaksi (Method, CRUD)
         private void loadTransactionData(int userId) {
             ArrayList<Transaction> transactions = db.getTransactionsByUserId(userId);
-            transactionModel.setRowCount(0); // Clear existing data
+            transactionModel.setRowCount(0); // Menghapus data yang ada
             for (Transaction transaction : transactions) {
                 transactionModel.addRow(new Object[]{
                     transaction.getTransactionAmount(),
@@ -382,6 +396,7 @@ public class DashboardAppGui extends JFrame {
         }
     }
 
+    // Metode utama untuk menjalankan aplikasi (Method)
     public static void main(String[] args) {
         new DashboardAppGui();
     }

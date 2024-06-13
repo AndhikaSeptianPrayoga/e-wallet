@@ -15,6 +15,7 @@ import java.util.ArrayList;
     Display untuk menampilkan dialog ketika user melakukan deposit, withdraw, atau transfer
  */
 public class BankingAppDialog extends JDialog implements ActionListener {
+    // 1. Class and Object: This is a class definition for BankingAppDialog which extends JDialog and implements ActionListener.
     private User user;
     private BankingAppGui bankingAppGui;
     private JLabel balanceLabel, enterAmountLabel, enterUserLabel;
@@ -23,6 +24,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     private JPanel pastTransactionPanel;
     private ArrayList<Transaction> pastTransactions;
 
+    // 1. Constructor: Initializes the dialog with references to the main GUI and user.
     public BankingAppDialog(BankingAppGui bankingAppGui, User user){
         // set the size
         setSize(400, 400);
@@ -30,10 +32,10 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         // add focus to the dialog (can't interact with anything else until dialog is closed)
         setModal(true);
 
-        // loads in teh center of our banking gui
+        // loads in the center of our banking gui
         setLocationRelativeTo(bankingAppGui);
 
-        // when suer closes dialog, it releases its resources that are being used
+        // when user closes dialog, it releases its resources that are being used
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         // prevents dialog from being resized
@@ -49,6 +51,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         this.user = user;
     }
 
+    // 13. Swing component: Adds labels and text fields to the dialog.
     public void addCurrentBalanceAndAmount(){
         // balance label
         balanceLabel = new JLabel("Saldo: RP." + user.getCurrentBalance());
@@ -72,14 +75,16 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(enterAmountField);
     }
 
+    // 13. Swing component: Adds an action button to the dialog.
     public void addActionButton(String actionButtonType){
         actionButton = new JButton(actionButtonType);
         actionButton.setBounds(15, 300, getWidth() - 50, 40);
         actionButton.setFont(new Font("Dialog", Font.BOLD, 20));
-        actionButton.addActionListener(this);
+        actionButton.addActionListener(this); // 10. Listener interface: Registers the dialog as an action listener.
         add(actionButton);
     }
 
+    // 13. Swing component: Adds a user input field to the dialog.
     public void addUserField(){
         // enter user label
         enterUserLabel = new JLabel("Masukan User:");
@@ -95,6 +100,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(enterUserField);
     }
 
+    // 13. Swing component: Adds past transaction components to the dialog.
     public void addPastTransactionComponents(){
         // container where we will store each transaction
         pastTransactionPanel = new JPanel();
@@ -109,7 +115,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBounds(0, 20, getWidth() - 15, getHeight() - 80);
 
-        // perform db call to retrieve all of the past transaction and store into array list
+        // 14. JDBC: Perform db call to retrieve all of the past transactions and store into array list
         pastTransactions = MyJDBC.getPastTransaction(user);
 
         // iterate through the list and add to the gui
@@ -152,6 +158,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(scrollPane);
     }
 
+    // 16. CRUD: Handles deposit and withdraw transactions.
     private void handleTransaction(String transactionType, float amountVal){
         Transaction transaction;
 
@@ -186,6 +193,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
 
     }
 
+    // 2. Encapsulation: Method to reset fields and update current balance.
     private void resetFieldsAndUpdateCurrentBalance(){
         // reset fields
         enterAmountField.setText("");
@@ -202,6 +210,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         bankingAppGui.getCurrentBalanceField().setText("Rp." + user.getCurrentBalance());
     }
 
+    // 16. CRUD: Handles transfer transactions.
     private void handleTransfer(User user, String transferredUser, float amount){
         // attempt to perform transfer
         if(MyJDBC.transfer(user, transferredUser, amount)){
@@ -214,6 +223,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         }
     }
 
+    // 11. Action event: Handles button press events.
     @Override
     public void actionPerformed(ActionEvent e) {
         String buttonPressed = e.getActionCommand();
@@ -252,17 +262,3 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

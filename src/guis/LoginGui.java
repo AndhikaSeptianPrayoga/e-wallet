@@ -1,131 +1,133 @@
-package guis;
-import constants.CommonConstants;
+package guis; // Deklarasi paket
 
-import db_objs.MyJDBC;
-import db_objs.User;
+import constants.CommonConstants; // Mengimpor konstanta
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import db_objs.MyJDBC; // Mengimpor kelas utilitas JDBC
+import db_objs.User; // Mengimpor kelas User
+
+import javax.swing.*; // Mengimpor komponen Swing
+import java.awt.*; // Mengimpor komponen AWT
+import java.awt.event.ActionEvent; // Mengimpor ActionEvent
+import java.awt.event.ActionListener; // Mengimpor ActionListener
+import java.awt.event.MouseAdapter; // Mengimpor MouseAdapter
+import java.awt.event.MouseEvent; // Mengimpor MouseEvent
 
 /*
    GUI ini digunakan untuk login ke aplikasi wallet mahasiswa
    dan dapat mengaharah ke GUI Register jika belum memiliki akun.
-
  */
-public class LoginGui extends BaseFrame{
-    public LoginGui(){
-        super("EduWallet Siswa Login");
+public class LoginGui extends BaseFrame { // Deklarasi kelas, LoginGui adalah subclass dari BaseFrame
+
+    // Konstruktor
+    public LoginGui() {
+        super("EduWallet Siswa Login"); // Memanggil konstruktor superclass
     }
 
     @Override
-    protected void addGuiComponents() {
-        // create banking app label
+    protected void addGuiComponents() { // Metode yang di-override dari superclass
+        // membuat label aplikasi perbankan
         JLabel bankingAppLabel = new JLabel("EduWallet: Tabungan Siswa");
 
-        // set the location and the size of the gui component
+        // mengatur lokasi dan ukuran komponen GUI
         bankingAppLabel.setBounds(-10, 20, super.getWidth(), 40);
 
-        // change the font style
+        // mengubah gaya font
         bankingAppLabel.setFont(new Font("Dialog", Font.BOLD, 28));
 
-        // center text in Jlabel
+        // memusatkan teks di JLabel
         bankingAppLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // set the color of the text
+        // mengatur warna teks
         bankingAppLabel.setForeground(CommonConstants.TEXT_COLOR);
 
-        // add to gui
+        // menambahkan ke GUI
         add(bankingAppLabel);
 
-        // create logo label
+        // membuat label logo
         JLabel logoLabel = new JLabel(new ImageIcon("src/assets/logo/logo1.png"));
 
         logoLabel.setBounds(0, 50, 400, 200);
 
-        // center the logo in the label
+        // memusatkan logo di label
         logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // add the logo to the gui
+        // menambahkan logo ke GUI
         add(logoLabel);
 
-        // username label
+        // label username
         JLabel usernameLabel = new JLabel("Username:");
 
-        // getWidth() returns us the width of our frame which is about 420
+        // getWidth() mengembalikan lebar frame kita yang sekitar 420
         usernameLabel.setBounds(20, 250, getWidth() - 30, 24);
 
         usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-        // change the color of the text
+        // mengubah warna teks
         usernameLabel.setForeground(CommonConstants.TEXT_COLOR);
 
         add(usernameLabel);
 
-        // create username field
+        // membuat field username
         JTextField usernameField = new JTextField();
         usernameField.setBounds(20, 280, getWidth() - 60, 40);
         usernameField.setFont(new Font("Dialog", Font.PLAIN, 28));
         usernameField.setForeground(CommonConstants.SECONDARY_COLOR);
         add(usernameField);
 
-        // create password label
+        // membuat label password
         JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setBounds(20, 330, getWidth() - 60, 24);
         passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
         passwordLabel.setForeground(CommonConstants.TEXT_COLOR);
         add(passwordLabel);
 
-        // create password field
+        // membuat field password
         JPasswordField passwordField = new JPasswordField();
         passwordField.setBounds(20, 360, getWidth() - 60, 40);
         passwordField.setFont(new Font("Dialog", Font.PLAIN, 28));
         passwordField.setForeground(CommonConstants.SECONDARY_COLOR);
         add(passwordField);
 
-        // create login button
+        // membuat tombol login
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(20, 460, getWidth() - 60, 40);
         loginButton.setFont(new Font("Dialog", Font.BOLD, 20));
         loginButton.setForeground(CommonConstants.SECONDARY_COLOR);
         loginButton.setBackground(CommonConstants.BUTTON_COLOR);
-        loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() { // Menambahkan ActionListener
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // get username
+            public void actionPerformed(ActionEvent e) { // Metode yang dipanggil saat tombol diklik
+                // mendapatkan username
                 String username = usernameField.getText();
 
-                // get password
+                // mendapatkan password
                 String password = String.valueOf(passwordField.getPassword());
 
-                // validate login
+                // memvalidasi login
                 User user = MyJDBC.validateLogin(username, password);
 
-                // if user is null it means invalid otherwise it is a valid account
+                // jika user null berarti tidak valid, jika tidak berarti akun valid
                 if(user != null){
-                    // means valid login
+                    // berarti login valid
 
-                    // dispose this gui
+                    // menutup GUI ini
                     LoginGui.this.dispose();
 
-                    // launch bank app gui
+                    // meluncurkan GUI aplikasi perbankan
                     BankingAppGui bankingAppGui = new BankingAppGui(user);
                     bankingAppGui.setVisible(true);
 
-                    // show success dialog
+                    // menampilkan dialog sukses
                     JOptionPane.showMessageDialog(bankingAppGui, "Login Successfully!");
                 }else{
-                    // invalid login
+                    // login tidak valid
                     JOptionPane.showMessageDialog(LoginGui.this, "Login failed...");
                 }
             }
         });
         add(loginButton);
 
-        // create register label
+        // membuat label register
         JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register Here</a></html>");
         registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         registerLabel.setForeground(Color.BLUE);
@@ -133,15 +135,14 @@ public class LoginGui extends BaseFrame{
         registerLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
         registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-
-        // adds an event listener so when the mouse is clicked it will launch the register gui
-        registerLabel.addMouseListener(new MouseAdapter() {
+        // menambahkan event listener sehingga saat mouse diklik akan meluncurkan GUI register
+        registerLabel.addMouseListener(new MouseAdapter() { // Menambahkan MouseAdapter
             @Override
-            public void mouseClicked(MouseEvent e) {
-                // dispose of this gui
+            public void mouseClicked(MouseEvent e) { // Metode yang dipanggil saat mouse diklik
+                // menutup GUI ini
                 LoginGui.this.dispose();
 
-                // launch the register gui
+                // meluncurkan GUI register
                 new RegisterGui().setVisible(true);
             }
         });
@@ -149,18 +150,3 @@ public class LoginGui extends BaseFrame{
         add(registerLabel);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

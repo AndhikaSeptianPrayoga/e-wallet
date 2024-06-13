@@ -7,19 +7,18 @@ import java.util.ArrayList;
 /*
     JDBC class digunakan untuk menghubungkan aplikasi ke database
  */
-public class MyJDBC {
-    // konfigurasi koneksi
+public class MyJDBC { // 1. Class
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/wallet_app";
+    // konfigurasi koneksi
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/wallet_app"; // 15. MySQL DB
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "";
 
-
     // Operasi Validasi Login
-    public static User validateLogin(String username, String password) {
+    public static User validateLogin(String username, String password) { // 1. Method
         try {
             // membuat koneksi ke database
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
             // create sql query
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -45,10 +44,10 @@ public class MyJDBC {
                 BigDecimal currentBalance = resultSet.getBigDecimal("current_balance");
 
                 // return user object
-                return new User(userId, username, password, currentBalance);
+                return new User(userId, username, password, currentBalance); // 1. Object
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException e) { // 8. Exception handling
             e.printStackTrace();
         }
 
@@ -59,11 +58,11 @@ public class MyJDBC {
     // registers new user to the database
     // true - register success
     // false - register fails
-    public static boolean register(String username, String password) {
+    public static boolean register(String username, String password) { // 1. Method
         try {
             // pengecekan apakah user sudah terdaftar
             if (!checkUser(username)) {
-                Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+                Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
                 PreparedStatement preparedStatement = connection.prepareStatement(
                         "INSERT INTO users(username, password, current_balance) " +
@@ -78,7 +77,7 @@ public class MyJDBC {
                 return true;
 
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) { // 8. Exception handling
             e.printStackTrace();
         }
 
@@ -88,9 +87,9 @@ public class MyJDBC {
     // cek apakah user sudah terdaftar
     // true - user exists
     // false - user doesn't exist
-    private static boolean checkUser(String username) {
+    private static boolean checkUser(String username) { // 1. Method
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT * FROM users WHERE username = ?"
@@ -103,7 +102,7 @@ public class MyJDBC {
             if (!resultSet.next()) {
                 return false;
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) { // 8. Exception handling
             e.printStackTrace();
         }
 
@@ -112,10 +111,10 @@ public class MyJDBC {
 
     // true - update to db was a success
     // false - update to the db was a fail
-    public static boolean addTransactionToDatabase(Transaction transaction) {
+    public static boolean addTransactionToDatabase(Transaction transaction) { // 1. Method
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
             connection.setAutoCommit(false); // Start transaction
 
             // Check if user exists
@@ -137,11 +136,11 @@ public class MyJDBC {
             insertTransaction.executeUpdate();
             connection.commit(); // Commit transaction
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException e) { // 8. Exception handling
             if (connection != null) {
                 try {
                     connection.rollback(); // Rollback on error
-                } catch (SQLException ex) {
+                } catch (SQLException ex) { // 8. Exception handling
                     ex.printStackTrace();
                 }
             }
@@ -151,7 +150,7 @@ public class MyJDBC {
                 try {
                     connection.setAutoCommit(true); // Reset auto-commit
                     connection.close();
-                } catch (SQLException e) {
+                } catch (SQLException e) { // 8. Exception handling
                     e.printStackTrace();
                 }
             }
@@ -161,9 +160,9 @@ public class MyJDBC {
 
     // true - update balance successful
     // false - update balance fail
-    public static boolean updateCurrentBalance(User user) {
+    public static boolean updateCurrentBalance(User user) { // 1. Method
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
             PreparedStatement updateBalance = connection.prepareStatement(
                     "UPDATE users SET current_balance = ? WHERE id = ?"
@@ -175,7 +174,7 @@ public class MyJDBC {
             updateBalance.executeUpdate();
             return true;
 
-        } catch (SQLException e) {
+        } catch (SQLException e) { // 8. Exception handling
             e.printStackTrace();
         }
 
@@ -184,14 +183,14 @@ public class MyJDBC {
 
     // true - transfer was a success
     // false - transfer was a fail
-    public static boolean transfer(User user, String transferredUsername, float transferAmount) {
+    public static boolean transfer(User user, String transferredUsername, float transferAmount) { // 1. Method
         if (user.getUsername().equals(transferredUsername)) {
             // Transaksi ke diri sendiri tidak diizinkan
             return false;
         }
 
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
             PreparedStatement queryUser = connection.prepareStatement(
                     "SELECT * FROM users WHERE username = ?"
@@ -207,295 +206,294 @@ public class MyJDBC {
                         transferredUsername,
                         resultSet.getString("password"),
                         resultSet.getBigDecimal("current_balance")
-                );
-
-                // create transaction
-                Transaction transferTransaction = new Transaction(
-                        user.getId(),
-                        "Transfer",
-                        new BigDecimal(-transferAmount),
-                        null
-                );
-
-                // this transaction will belong to the transferred user
-                Transaction receivedTransaction = new Transaction(
-                        transferredUser.getId(),
-                        "Transfer",
-                        new BigDecimal(transferAmount),
-                        null
-                );
-
-                // update transfer user
-                transferredUser.setCurrentBalance(transferredUser.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
-                updateCurrentBalance(transferredUser);
-
-                // update user current balance
-                user.setCurrentBalance(user.getCurrentBalance().subtract(BigDecimal.valueOf(transferAmount)));
-                updateCurrentBalance(user);
-
-                // add these transactions to the database
-                addTransactionToDatabase(transferTransaction);
-                addTransactionToDatabase(receivedTransaction);
-
-                return true;
+                    );
+    
+                    // create transaction
+                    Transaction transferTransaction = new Transaction(
+                            user.getId(),
+                            "Transfer",
+                            new BigDecimal(-transferAmount),
+                            null
+                    );
+    
+                    // this transaction will belong to the transferred user
+                    Transaction receivedTransaction = new Transaction(
+                            transferredUser.getId(),
+                            "Transfer",
+                            new BigDecimal(transferAmount),
+                            null
+                    );
+    
+                    // update transfer user
+                    transferredUser.setCurrentBalance(transferredUser.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
+                    updateCurrentBalance(transferredUser);
+    
+                    // update user current balance
+                    user.setCurrentBalance(user.getCurrentBalance().subtract(BigDecimal.valueOf(transferAmount)));
+                    updateCurrentBalance(user);
+    
+                    // add these transactions to the database
+                    addTransactionToDatabase(transferTransaction);
+                    addTransactionToDatabase(receivedTransaction);
+    
+                    return true;
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    // get all transactions (used for past transaction)
-    public static ArrayList<Transaction> getPastTransaction(User user) {
-        ArrayList<Transaction> pastTransactions = new ArrayList<>();
-        try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-
-            PreparedStatement selectAllTransaction = connection.prepareStatement(
-                    "SELECT * FROM transactions WHERE user_id = ?"
-            );
-            selectAllTransaction.setInt(1, user.getId());
-
-            ResultSet resultSet = selectAllTransaction.executeQuery();
-
-            // iterate throught the results (if any)
-            while (resultSet.next()) {
-                // create transaction obj
-                Transaction transaction = new Transaction(
-                        user.getId(),
-                        resultSet.getString("transaction_type"),
-                        resultSet.getBigDecimal("transaction_amount"),
-                        resultSet.getDate("transaction_date")
-                );
-
-                // store into array list
-                pastTransactions.add(transaction);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return pastTransactions;
-    }
-
-
-    public static boolean createUser(String username, String password, BigDecimal currentBalance) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO users(username, password, current_balance) VALUES(?, ?, ?)"
-            );
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            preparedStatement.setBigDecimal(3, currentBalance);
-            int result = preparedStatement.executeUpdate();
-            return result > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+    
             return false;
         }
-    }
-
-    // Mengambil data user berdasarkan username
-    public static User getUser(String username) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM users WHERE username = ?"
-            );
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("username"),
-                        resultSet.getString("password"),
-                        resultSet.getBigDecimal("current_balance")
+    
+        // get all transactions (used for past transaction)
+        public static ArrayList<Transaction> getPastTransaction(User user) { // 1. Method
+            ArrayList<Transaction> pastTransactions = new ArrayList<>();
+            try {
+                Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
+    
+                PreparedStatement selectAllTransaction = connection.prepareStatement(
+                        "SELECT * FROM transactions WHERE user_id = ?"
                 );
+                selectAllTransaction.setInt(1, user.getId());
+    
+                ResultSet resultSet = selectAllTransaction.executeQuery();
+    
+                // iterate throught the results (if any)
+                while (resultSet.next()) {
+                    // create transaction obj
+                    Transaction transaction = new Transaction(
+                            user.getId(),
+                            resultSet.getString("transaction_type"),
+                            resultSet.getBigDecimal("transaction_amount"),
+                            resultSet.getDate("transaction_date")
+                    );
+    
+                    // store into array list
+                    pastTransactions.add(transaction);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    
+            return pastTransactions;
         }
-        return null;
-    }
-
-    // Memperbarui data user
-    public static boolean updateUser(int userId, String username, BigDecimal currentBalance, String password) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE users SET username = ?, password = ?, current_balance = ? WHERE id = ?"
-            );
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            preparedStatement.setBigDecimal(3, currentBalance);
-            preparedStatement.setInt(4, userId);
-            int result = preparedStatement.executeUpdate();
-            return result > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Menghapus user dari database
-    public static boolean deleteUser(int userId) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM users WHERE id = ?"
-            );
-            preparedStatement.setInt(1, userId);
-            int result = preparedStatement.executeUpdate();
-            return result > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Mendapatkan semua user dari database
-    public static ArrayList<User> getAllUsers() {
-        ArrayList<User> users = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(MyJDBC.DB_URL, MyJDBC.DB_USERNAME, MyJDBC.DB_PASSWORD)) {
-
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                User user = new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("username"),
-                        resultSet.getString("password"),
-                        resultSet.getBigDecimal("current_balance")
+    
+        public static boolean createUser(String username, String password, BigDecimal currentBalance) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO users(username, password, current_balance) VALUES(?, ?, ?)"
                 );
-                users.add(user);
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password);
+                preparedStatement.setBigDecimal(3, currentBalance);
+                int result = preparedStatement.executeUpdate();
+                return result > 0;
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return users;
-    }
-
-    public static ArrayList<Transaction> getPastTransaction(int userId) {
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM transactions WHERE user_id = ?"
-            );
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Transaction transaction = new Transaction(
-                        resultSet.getInt("user_id"),
-                        resultSet.getString("transaction_type"),
-                        resultSet.getBigDecimal("transaction_amount"),
-                        resultSet.getDate("transaction_date")
+    
+        // Mengambil data user berdasarkan username
+        public static User getUser(String username) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM users WHERE username = ?"
                 );
-                transactions.add(transaction);
+                preparedStatement.setString(1, username);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return new User(
+                            resultSet.getInt("id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getBigDecimal("current_balance")
+                    );
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
-        return transactions;
-    }
-
-    public User getUserById(int userId) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM users WHERE id = ?"
-            );
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("username"),
-                        resultSet.getString("password"),
-                        resultSet.getBigDecimal("current_balance")
+    
+        // Memperbarui data user
+        public static boolean updateUser(int userId, String username, BigDecimal currentBalance, String password) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "UPDATE users SET username = ?, password = ?, current_balance = ? WHERE id = ?"
                 );
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password);
+                preparedStatement.setBigDecimal(3, currentBalance);
+                preparedStatement.setInt(4, userId);
+                int result = preparedStatement.executeUpdate();
+                return result > 0;
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
-    }
-
-    public void createUser(String username, BigDecimal balance, String password) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO users(username, current_balance, password) VALUES(?, ?, ?)"
-            );
-            preparedStatement.setString(1, username);
-            preparedStatement.setBigDecimal(2, balance);
-            preparedStatement.setString(3, password);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ArrayList<Transaction> getTransactionsByUserId(int userId) {
-ArrayList<Transaction> transactions = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM transactions WHERE user_id = ?"
-            );
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Transaction transaction = new Transaction(
-                        resultSet.getInt("user_id"),
-                        resultSet.getString("transaction_type"),
-                        resultSet.getBigDecimal("transaction_amount"),
-                        resultSet.getDate("transaction_date")
+    
+        // Menghapus user dari database
+        public static boolean deleteUser(int userId) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "DELETE FROM users WHERE id = ?"
                 );
-                transactions.add(transaction);
+                preparedStatement.setInt(1, userId);
+                int result = preparedStatement.executeUpdate();
+                return result > 0;
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-    }
-        return transactions;
-    }
-
-    public int getTotalTransactions() {
-        int totalTransactions = 0;
-        String query = "SELECT COUNT(*) FROM transactions";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            if (rs.next()) {
-                totalTransactions = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return totalTransactions;
-    }
-
-    public int getTotalUsers() {
-        int totalUsers = 0;
-        String query = "SELECT COUNT(*) FROM users";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            if (rs.next()) {
-                totalUsers = rs.getInt(1);
+    
+        // Mendapatkan semua user dari database
+        public static ArrayList<User> getAllUsers() { // 1. Method
+            ArrayList<User> users = new ArrayList<>();
+            try (Connection connection = DriverManager.getConnection(MyJDBC.DB_URL, MyJDBC.DB_USERNAME, MyJDBC.DB_PASSWORD)) { // 14. JDBC
+    
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users");
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    User user = new User(
+                            resultSet.getInt("id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getBigDecimal("current_balance")
+                    );
+                    users.add(user);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return users;
         }
-        return totalUsers;
-    }
-
-    public BigDecimal getTotalNominal() {
-        BigDecimal totalNominal = BigDecimal.ZERO;
-        String query = "SELECT SUM(current_balance) FROM users";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            if (rs.next()) {
-                totalNominal = rs.getBigDecimal(1);
+    
+        public static ArrayList<Transaction> getPastTransaction(int userId) { // 1. Method
+            ArrayList<Transaction> transactions = new ArrayList<>();
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM transactions WHERE user_id = ?"
+                );
+                preparedStatement.setInt(1, userId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    Transaction transaction = new Transaction(
+                            resultSet.getInt("user_id"),
+                            resultSet.getString("transaction_type"),
+                            resultSet.getBigDecimal("transaction_amount"),
+                            resultSet.getDate("transaction_date")
+                    );
+                    transactions.add(transaction);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return         transactions;
         }
-        return totalNominal;
+    
+        public User getUserById(int userId) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM users WHERE id = ?"
+                );
+                preparedStatement.setInt(1, userId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return new User(
+                            resultSet.getInt("id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getBigDecimal("current_balance")
+                    );
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+            return null;
+        }
+    
+        public void createUser(String username, BigDecimal balance, String password) { // 1. Method
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO users(username, current_balance, password) VALUES(?, ?, ?)"
+                );
+                preparedStatement.setString(1, username);
+                preparedStatement.setBigDecimal(2, balance);
+                preparedStatement.setString(3, password);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+        }
+    
+        public ArrayList<Transaction> getTransactionsByUserId(int userId) { // 1. Method
+            ArrayList<Transaction> transactions = new ArrayList<>();
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) { // 14. JDBC
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM transactions WHERE user_id = ?"
+                );
+                preparedStatement.setInt(1, userId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    Transaction transaction = new Transaction(
+                            resultSet.getInt("user_id"),
+                            resultSet.getString("transaction_type"),
+                            resultSet.getBigDecimal("transaction_amount"),
+                            resultSet.getDate("transaction_date")
+                    );
+                    transactions.add(transaction);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+            return transactions;
+        }
+    
+        public int getTotalTransactions() { // 1. Method
+            int totalTransactions = 0;
+            String query = "SELECT COUNT(*) FROM transactions";
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+                if (rs.next()) {
+                    totalTransactions = rs.getInt(1);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+            return totalTransactions;
+        }
+    
+        public int getTotalUsers() { // 1. Method
+            int totalUsers = 0;
+            String query = "SELECT COUNT(*) FROM users";
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+                if (rs.next()) {
+                    totalUsers = rs.getInt(1);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+            return totalUsers;
+        }
+    
+        public BigDecimal getTotalNominal() { // 1. Method
+            BigDecimal totalNominal = BigDecimal.ZERO;
+            String query = "SELECT SUM(current_balance) FROM users";
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+                if (rs.next()) {
+                    totalNominal = rs.getBigDecimal(1);
+                }
+            } catch (SQLException e) { // 8. Exception handling
+                e.printStackTrace();
+            }
+            return totalNominal;
+        }
     }
-}
