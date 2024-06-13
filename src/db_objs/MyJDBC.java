@@ -453,18 +453,49 @@ ArrayList<Transaction> transactions = new ArrayList<>();
     }
         return transactions;
     }
+
+    public int getTotalTransactions() {
+        int totalTransactions = 0;
+        String query = "SELECT COUNT(*) FROM transactions";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                totalTransactions = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalTransactions;
+    }
+
+    public int getTotalUsers() {
+        int totalUsers = 0;
+        String query = "SELECT COUNT(*) FROM users";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                totalUsers = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalUsers;
+    }
+
+    public BigDecimal getTotalNominal() {
+        BigDecimal totalNominal = BigDecimal.ZERO;
+        String query = "SELECT SUM(current_balance) FROM users";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                totalNominal = rs.getBigDecimal(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalNominal;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -17,6 +17,9 @@ public class DashboardAppGui extends JFrame {
     private JTable table;
     private DefaultTableModel model;
     private MyJDBC db;
+    private JLabel totalTransactionsLabel;
+    private JLabel totalUsersLabel;
+    private JLabel totalNominalLabel;
 
     public DashboardAppGui() {
         setTitle("Dashboard Admin");
@@ -152,6 +155,20 @@ public class DashboardAppGui extends JFrame {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(33, 150, 243), 2));
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Add the new panel for database statistics
+        JPanel statsPanel = new JPanel(new GridLayout(1, 3));
+        statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+        totalTransactionsLabel = new JLabel("Total Transaksi: 0");
+        totalUsersLabel = new JLabel("Jumlah Users: 0");
+        totalNominalLabel = new JLabel("Total Nominal: 0");
+
+        statsPanel.add(totalTransactionsLabel);
+        statsPanel.add(totalUsersLabel);
+        statsPanel.add(totalNominalLabel);
+
+        contentPanel.add(statsPanel, BorderLayout.SOUTH);
+
         add(contentPanel, BorderLayout.CENTER);
 
         // Action Listeners untuk Tombol CRUD
@@ -214,6 +231,7 @@ public class DashboardAppGui extends JFrame {
         });
 
         loadData();
+        loadStats();
 
         setVisible(true);
     }
@@ -233,6 +251,16 @@ public class DashboardAppGui extends JFrame {
         for (User user : users) {
             model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getCurrentBalance()});
         }
+    }
+
+    private void loadStats() {
+        int totalTransactions = db.getTotalTransactions();
+        int totalUsers = db.getTotalUsers();
+        BigDecimal totalNominal = db.getTotalNominal();
+
+        totalTransactionsLabel.setText("Total Transaksi: " + totalTransactions);
+        totalUsersLabel.setText("Jumlah Users: " + totalUsers);
+        totalNominalLabel.setText("Total Nominal: " + totalNominal);
     }
 
     class UpdateDialog extends JDialog {
