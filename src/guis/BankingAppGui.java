@@ -200,13 +200,6 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         currentBalanceField.setForeground(CommonConstants.PRIMARY_COLOR);
 
-        // Ensure the font color does not change after transfer
-        currentBalanceField.addPropertyChangeListener("foreground", evt -> {
-            if (!CommonConstants.TEXT_COLOR.equals(evt.getNewValue())) {
-                currentBalanceField.setForeground(CommonConstants.TEXT_COLOR);
-            }
-        });
-
         balancePanel.add(currentBalanceField);
 
 
