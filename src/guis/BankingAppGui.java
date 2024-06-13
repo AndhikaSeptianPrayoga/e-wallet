@@ -97,7 +97,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         int buttonY = 120;
         int buttonSpacing = 20;
         for (int i = 0; i < buttonLabels.length; i++) {
-            JButton button = new JButton();
+            JButton button = new JButton(buttonLabels[i]);
             button.setBounds(25 + (i * (buttonWidth + buttonSpacing)), buttonY, buttonWidth, buttonHeight);
             button.setFont(new Font("Dialog", Font.BOLD, 14));
             button.setForeground(new Color(0x00BCD4));
