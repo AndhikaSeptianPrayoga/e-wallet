@@ -31,12 +31,12 @@ public class DashboardAppGui extends JFrame {
         navPanel.setBackground(new Color(33, 33, 33));
         navPanel.setPreferredSize(new Dimension(250, getHeight()));
 
-        JLabel navTitle = new JLabel("Admin Panel");
-        navTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        navTitle.setForeground(Color.WHITE);
-        navTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        navTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        navPanel.add(navTitle);
+        ImageIcon logoIcon = new ImageIcon("lib/logo1.png");
+        Image logoImage = logoIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(logoImage));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        navPanel.add(logoLabel);
 
         // Tombol Operasi CRUD
         JButton createButton = new JButton("Menambah Data");
@@ -58,6 +58,25 @@ public class DashboardAppGui extends JFrame {
         deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         refreshButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Set border radius and background color
+        createButton.setBackground(new Color(70, 130, 180));
+        readButton.setBackground(new Color(70, 130, 180));
+        updateButton.setBackground(new Color(70, 130, 180));
+        deleteButton.setBackground(new Color(70, 130, 180));
+        refreshButton.setBackground(new Color(70, 130, 180));
+
+        createButton.setForeground(Color.WHITE);
+        readButton.setForeground(Color.WHITE);
+        updateButton.setForeground(Color.WHITE);
+        deleteButton.setForeground(Color.WHITE);
+        refreshButton.setForeground(Color.WHITE);
+
+        createButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+        readButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+        updateButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+        deleteButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+        refreshButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+
         navPanel.add(createButton);
         navPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         navPanel.add(readButton);
@@ -76,16 +95,31 @@ public class DashboardAppGui extends JFrame {
         JLabel headerLabel = new JLabel(" Dashboard Admin", JLabel.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(Color.WHITE);
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
+
+        // Panel Konten
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Model Tabel
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 0; // Only the checkbox column is editable
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class; // Checkbox column
+                }
+                return super.getColumnClass(columnIndex);
             }
         };
+        model.addColumn("Select");
         model.addColumn("ID PENGGUNA");
         model.addColumn("NAMA PENGGUNA");
         model.addColumn("SALDO TERKINI");
@@ -107,12 +141,18 @@ public class DashboardAppGui extends JFrame {
                 } else {
                     c.setBackground(Color.WHITE);
                 }
+                if (isSelected) {
+                    c.setBackground(new Color(184, 207, 229));
+                }
                 return c;
             }
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(33, 150, 243), 2));
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(contentPanel, BorderLayout.CENTER);
 
         // Action Listeners untuk Tombol CRUD
         createButton.addActionListener(new ActionListener() {
@@ -125,9 +165,9 @@ public class DashboardAppGui extends JFrame {
 
         readButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
+                int selectedRow = getSelectedRow();
                 if (selectedRow >= 0) {
-                    int userId = (int) model.getValueAt(selectedRow, 0);
+                    int userId = (int) model.getValueAt(selectedRow, 1);
                     TransactionDialog transactionDialog = new TransactionDialog(null, "View Transactions", true, userId);
                     transactionDialog.setLocationRelativeTo(null);
                     transactionDialog.setVisible(true);
@@ -139,9 +179,9 @@ public class DashboardAppGui extends JFrame {
 
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
+                int selectedRow = getSelectedRow();
                 if (selectedRow >= 0) {
-                    int userId = (int) model.getValueAt(selectedRow, 0);
+                    int userId = (int) model.getValueAt(selectedRow, 1);
                     UpdateDialog updateDialog = new UpdateDialog(null, "Update User", true, userId);
                     updateDialog.setLocationRelativeTo(null);
                     updateDialog.setVisible(true);
@@ -153,9 +193,9 @@ public class DashboardAppGui extends JFrame {
 
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
+                int selectedRow = getSelectedRow();
                 if (selectedRow >= 0) {
-                    int userId = (int) model.getValueAt(selectedRow, 0);
+                    int userId = (int) model.getValueAt(selectedRow, 1);
                     int response = JOptionPane.showConfirmDialog(null, "Apakah Anda yakin ingin menghapus?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
                     if (response == JOptionPane.YES_OPTION) {
                         db.deleteUser(userId);
@@ -178,11 +218,20 @@ public class DashboardAppGui extends JFrame {
         setVisible(true);
     }
 
+    private int getSelectedRow() {
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if ((Boolean) model.getValueAt(i, 0)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void loadData() {
         ArrayList<User> users = db.getAllUsers();
         model.setRowCount(0); // Menghapus data yang ada
         for (User user : users) {
-            model.addRow(new Object[]{user.getId(), user.getUsername(), user.getCurrentBalance()});
+            model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getCurrentBalance()});
         }
     }
 
