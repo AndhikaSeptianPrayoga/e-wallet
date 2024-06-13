@@ -185,6 +185,11 @@ public class MyJDBC {
     // true - transfer was a success
     // false - transfer was a fail
     public static boolean transfer(User user, String transferredUsername, float transferAmount) {
+        if (user.getUsername().equals(transferredUsername)) {
+            // Transaksi ke diri sendiri tidak diizinkan
+            return false;
+        }
+
         try {
             Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
@@ -195,8 +200,8 @@ public class MyJDBC {
             queryUser.setString(1, transferredUsername);
             ResultSet resultSet = queryUser.executeQuery();
 
-            while (resultSet.next()) {
-                // perfrom transfer
+            if (resultSet.next()) {
+                // perform transfer
                 User transferredUser = new User(
                         resultSet.getInt("id"),
                         transferredUsername,
@@ -233,7 +238,6 @@ public class MyJDBC {
                 addTransactionToDatabase(receivedTransaction);
 
                 return true;
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
