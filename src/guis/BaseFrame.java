@@ -1,11 +1,7 @@
 package guis;
 import constants.CommonConstants;
-
-
 import db_objs.User;
-
 import javax.swing.*;
-
 /*
     Creating an abstract class helps us setup the blueprint that our GUIs will follow, for example
     in each of the GUIs they will be thee same size and will need to invoke their own addGuiComponents()
@@ -53,18 +49,3 @@ public abstract class BaseFrame extends JFrame {
     // this method will need to be defined by subclasses when this class is being inherited from
     protected abstract void addGuiComponents();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

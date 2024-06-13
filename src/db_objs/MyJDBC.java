@@ -185,6 +185,11 @@ public class MyJDBC {
     // true - transfer was a success
     // false - transfer was a fail
     public static boolean transfer(User user, String transferredUsername, float transferAmount) {
+        // Prevent transfer to the same account
+        if (user.getUsername().equals(transferredUsername)) {
+            return false;
+        }
+
         try {
             Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
@@ -196,7 +201,7 @@ public class MyJDBC {
             ResultSet resultSet = queryUser.executeQuery();
 
             while (resultSet.next()) {
-                // perfrom transfer
+                // perform transfer
                 User transferredUser = new User(
                         resultSet.getInt("id"),
                         transferredUsername,
