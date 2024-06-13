@@ -18,19 +18,19 @@ import java.awt.event.MouseEvent;
  */
 public class LoginGui extends BaseFrame{
     public LoginGui(){
-        super("Wallet Mahasiswa Login");
+        super("EduWallet Siswa Login");
     }
 
     @Override
     protected void addGuiComponents() {
         // create banking app label
-        JLabel bankingAppLabel = new JLabel("Wallet Mahasiswa");
+        JLabel bankingAppLabel = new JLabel("EduWallet: Tabungan Siswa");
 
         // set the location and the size of the gui component
-        bankingAppLabel.setBounds(0, 20, super.getWidth(), 40);
+        bankingAppLabel.setBounds(-10, 20, super.getWidth(), 40);
 
         // change the font style
-        bankingAppLabel.setFont(new Font("Dialog", Font.BOLD, 32));
+        bankingAppLabel.setFont(new Font("Dialog", Font.BOLD, 28));
 
         // center text in Jlabel
         bankingAppLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -41,11 +41,22 @@ public class LoginGui extends BaseFrame{
         // add to gui
         add(bankingAppLabel);
 
+        // create logo label
+        JLabel logoLabel = new JLabel(new ImageIcon("src/assets/logo/logo1.png"));
+
+        logoLabel.setBounds(0, 50, 400, 200);
+
+        // center the logo in the label
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // add the logo to the gui
+        add(logoLabel);
+
         // username label
         JLabel usernameLabel = new JLabel("Username:");
 
         // getWidth() returns us the width of our frame which is about 420
-        usernameLabel.setBounds(20, 120, getWidth() - 30, 24);
+        usernameLabel.setBounds(20, 250, getWidth() - 30, 24);
 
         usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
 
@@ -56,30 +67,31 @@ public class LoginGui extends BaseFrame{
 
         // create username field
         JTextField usernameField = new JTextField();
-        usernameField.setBounds(20, 160, getWidth() - 50, 40);
+        usernameField.setBounds(20, 280, getWidth() - 60, 40);
         usernameField.setFont(new Font("Dialog", Font.PLAIN, 28));
         usernameField.setForeground(CommonConstants.SECONDARY_COLOR);
         add(usernameField);
 
         // create password label
         JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setBounds(20, 280, getWidth() - 50, 24);
+        passwordLabel.setBounds(20, 330, getWidth() - 60, 24);
         passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
         passwordLabel.setForeground(CommonConstants.TEXT_COLOR);
         add(passwordLabel);
 
         // create password field
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setBounds(20, 320, getWidth() - 50, 40);
+        passwordField.setBounds(20, 360, getWidth() - 60, 40);
         passwordField.setFont(new Font("Dialog", Font.PLAIN, 28));
         passwordField.setForeground(CommonConstants.SECONDARY_COLOR);
         add(passwordField);
 
         // create login button
         JButton loginButton = new JButton("Login");
-        loginButton.setBounds(20, 460, getWidth() - 50, 40);
+        loginButton.setBounds(20, 460, getWidth() - 60, 40);
         loginButton.setFont(new Font("Dialog", Font.BOLD, 20));
         loginButton.setForeground(CommonConstants.SECONDARY_COLOR);
+        loginButton.setBackground(CommonConstants.BUTTON_COLOR);
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,8 +129,8 @@ public class LoginGui extends BaseFrame{
         JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register Here</a></html>");
         registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         registerLabel.setForeground(Color.BLUE);
-        registerLabel.setBounds(0, 510, getWidth() - 10, 30);
-        registerLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+        registerLabel.setBounds(0, 510, getWidth() - 20, 30);
+        registerLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
         registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 

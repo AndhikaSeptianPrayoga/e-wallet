@@ -175,13 +175,13 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         // update database
         if(MyJDBC.addTransactionToDatabase(transaction) && MyJDBC.updateCurrentBalance(user)){
             // show success dialog
-            JOptionPane.showMessageDialog(this, transactionType + " Successfully!");
+            JOptionPane.showMessageDialog(this, transactionType + " Berhasil!");
 
             // reset the fields
             resetFieldsAndUpdateCurrentBalance();
         }else{
             // show failure dialog
-            JOptionPane.showMessageDialog(this, transactionType + " Failed...");
+            JOptionPane.showMessageDialog(this, transactionType + " Gagal...");
         }
 
     }
@@ -239,7 +239,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             }
 
             // check to see if withdraw or transfer was pressed
-            if(buttonPressed.equalsIgnoreCase("Penarikan Dana")){
+            if(buttonPressed.equalsIgnoreCase("Tarik Dana")){
                 handleTransaction(buttonPressed, amountVal);
             }else{
                 // transfer
