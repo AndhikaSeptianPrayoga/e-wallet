@@ -182,7 +182,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         // 13. Swing component: Creating and adding a current balance field to the balance panel.
 
-        currentBalanceField = new JTextField("Rp. " + String.format("%,.2f", user.getCurrentBalance()));
+        currentBalanceField = new JTextField("Rp." + String.format("%,.2f", user.getCurrentBalance()));
 
         currentBalanceField.setBounds(20, 40, 200, 40);
 
@@ -194,12 +194,20 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         currentBalanceField.setBorder(null);
 
+        currentBalanceField.setOpaque(false); // Ensure the text field is transparent
+
         currentBalanceField.setBackground(new Color(0, 0, 0, 0)); // Make the background transparent
 
-        currentBalanceField.setForeground(Color.WHITE);
+        currentBalanceField.setForeground(CommonConstants.PRIMARY_COLOR);
+
+        // Ensure the font color does not change after transfer
+        currentBalanceField.addPropertyChangeListener("foreground", evt -> {
+            if (!CommonConstants.TEXT_COLOR.equals(evt.getNewValue())) {
+                currentBalanceField.setForeground(CommonConstants.TEXT_COLOR);
+            }
+        });
 
         balancePanel.add(currentBalanceField);
-
 
 
         // 13. Swing component: Creating buttons with icons for different banking actions.
