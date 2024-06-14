@@ -3,6 +3,7 @@ package db_objs;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.math.BigInteger;
 
 /*
     JDBC class digunakan untuk menghubungkan aplikasi ke database
@@ -58,20 +59,21 @@ public class MyJDBC { // 1. Class
     // registers new user to the database
     // true - register success
     // false - register fails
-    public static boolean register(String username, String password) { // 1. Method
+    public static boolean register(String username, String password, BigInteger phoneNumber) { // 1. Method
         try {
             // pengecekan apakah user sudah terdaftar
-            if (!checkUser(username)) {
+            if (!checkUser(username) && !checkPhoneNumber(phoneNumber)) {
                 Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO users(username, password, current_balance) " +
-                                "VALUES(?, ?, ?)"
+                        "INSERT INTO users(username, password, current_balance, phone_number) " +
+                                "VALUES(?, ?, ?, ?)"
                 );
 
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
                 preparedStatement.setBigDecimal(3, new BigDecimal(0));
+                preparedStatement.setString(4, phoneNumber.toString());
 
                 preparedStatement.executeUpdate();
                 return true;
@@ -82,6 +84,28 @@ public class MyJDBC { // 1. Class
         }
 
         return false;
+    }
+
+    private static boolean checkPhoneNumber(BigInteger phoneNumber) { // 1. Method
+        try {
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
+
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM users WHERE phone_number = ?"
+            );
+
+            preparedStatement.setString(1, phoneNumber.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // ini akan mengembalikan false jika tidak ada data yang ditemukan
+            if (!resultSet.next()) {
+                return false;
+            }
+        } catch (SQLException e) { // 8. Exception handling
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
     // cek apakah user sudah terdaftar

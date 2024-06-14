@@ -18,6 +18,7 @@ public class AppLauncher {
           //     new BankingAppGui(
           //            new User(4, "username", "password", new BigDecimal("20.00"))
          //       ).setVisible(true);
+                
             }
         });
     }

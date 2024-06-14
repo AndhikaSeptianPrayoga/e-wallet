@@ -127,23 +127,38 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             JPanel pastTransactionContainer = new JPanel();
             pastTransactionContainer.setLayout(new BorderLayout());
 
+            // create a sub-container to hold transaction type, date, and amount labels
+            JPanel typeDateAndAmountContainer = new JPanel();
+            typeDateAndAmountContainer.setLayout(new BorderLayout());
+
             // create transaction type label
             JLabel transactionTypeLabel = new JLabel(pastTransaction.getTransactionType());
             transactionTypeLabel.setFont(new Font("Dialog", Font.BOLD, 20));
-
-            // create transaction amount label
-            JLabel transactionAmountLabel = new JLabel(String.valueOf(pastTransaction.getTransactionAmount()));
-            transactionAmountLabel.setFont(new Font("Dialog", Font.BOLD, 20));
 
             // create transaction date label
             JLabel transactionDateLabel = new JLabel(String.valueOf(pastTransaction.getTransactionDate()));
             transactionDateLabel.setFont(new Font("Dialog", Font.BOLD, 20));
 
-            // add to the container
-            pastTransactionContainer.add(transactionTypeLabel, BorderLayout.WEST); // place this on the west side
-            pastTransactionContainer.add(transactionAmountLabel, BorderLayout.EAST); // place this on the east side
-            pastTransactionContainer.add(transactionDateLabel, BorderLayout.SOUTH); // place this on the south side
+            // create a panel to hold type and date labels vertically
+            JPanel typeAndDatePanel = new JPanel();
+            typeAndDatePanel.setLayout(new BoxLayout(typeAndDatePanel, BoxLayout.Y_AXIS));
+            typeAndDatePanel.add(transactionTypeLabel);
+            typeAndDatePanel.add(transactionDateLabel);
 
+            // create transaction amount label
+            JLabel transactionAmountLabel = new JLabel(String.valueOf(pastTransaction.getTransactionAmount()));
+            transactionAmountLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+
+            // create a panel to hold all components horizontally
+            JPanel fullWidthPanel = new JPanel();
+            fullWidthPanel.setLayout(new BoxLayout(fullWidthPanel, BoxLayout.X_AXIS));
+            fullWidthPanel.add(typeAndDatePanel);
+            fullWidthPanel.add(Box.createHorizontalGlue()); // to push the amount label to the right
+            fullWidthPanel.add(transactionAmountLabel);
+
+            // add the full width panel to the past transaction container
+            pastTransactionContainer.setLayout(new BorderLayout());
+            pastTransactionContainer.add(fullWidthPanel, BorderLayout.CENTER);
             // give a white background to each container
             pastTransactionContainer.setBackground(Color.WHITE);
 
