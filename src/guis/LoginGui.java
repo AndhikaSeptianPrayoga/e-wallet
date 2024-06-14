@@ -114,11 +114,15 @@ public class LoginGui extends BaseFrame { // Deklarasi kelas, LoginGui adalah su
                     LoginGui.this.dispose();
 
                     // meluncurkan GUI aplikasi perbankan
-                    BankingAppGui bankingAppGui = new BankingAppGui(user);
-                    bankingAppGui.setVisible(true);
-
-                    // menampilkan dialog sukses
-                    JOptionPane.showMessageDialog(bankingAppGui, "Login Successfully!");
+                    if (user.getRole() == 1) {
+                        DashboardAppGui dashboardAppGui = new DashboardAppGui();
+                        dashboardAppGui.setVisible(true);
+                        JOptionPane.showMessageDialog(dashboardAppGui, "Login as Admin Successfully!");
+                    } else {
+                        BankingAppGui bankingAppGui = new BankingAppGui(user);
+                        bankingAppGui.setVisible(true);
+                        JOptionPane.showMessageDialog(bankingAppGui, "Login Successfully!");
+                    }
                 }else{
                     // login tidak valid
                     JOptionPane.showMessageDialog(LoginGui.this, "Login failed...");

@@ -87,7 +87,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     // 13. Swing component: Adds a user input field to the dialog.
     public void addUserField(){
         // enter user label
-        enterUserLabel = new JLabel("Masukan User:");
+        enterUserLabel = new JLabel("Masukan Nomor Telepon:");
         enterUserLabel.setBounds(0, 160, getWidth() - 20, 20);
         enterUserLabel.setFont(new Font("Dialog", Font.BOLD, 16));
         enterUserLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -211,14 +211,11 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     }
 
     // 16. CRUD: Handles transfer transactions.
-    private void handleTransfer(User user, String transferredUser, float amount){
-        // attempt to perform transfer
-        if(MyJDBC.transfer(user, transferredUser, amount)){
-            // show success dialog
+    private void handleTransfer(User user, String transferredPhone, float amount){
+        if (MyJDBC.transfer(user, transferredPhone, amount)) {
             JOptionPane.showMessageDialog(this, "Transfer berhasil!");
             resetFieldsAndUpdateCurrentBalance();
-        }else{
-            // show failure dialog
+        } else {
             JOptionPane.showMessageDialog(this, "Transfer gagal...");
         }
     }
@@ -253,10 +250,10 @@ public class BankingAppDialog extends JDialog implements ActionListener {
                 handleTransaction(buttonPressed, amountVal);
             }else{
                 // transfer
-                String transferredUser = enterUserField.getText();
+                String transferredPhone = enterUserField.getText();
 
                 // handle transfer
-                handleTransfer(user, transferredUser, amountVal);
+                handleTransfer(user, transferredPhone, amountVal);
             }
 
         }

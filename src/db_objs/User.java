@@ -9,15 +9,18 @@ import java.math.RoundingMode;
 public class User {
     // Enkapsulasi: field-field private
     private final int id;
-    private final String username, password;
+    private final String username, password, phone;
     private BigDecimal currentBalance;
+    private final int role; // Add role field
 
     // Konstruktor: menginisialisasi objek User
-    public User(int id, String username, String password, BigDecimal currentBalance){
+    public User(int id, String username, String password, BigDecimal currentBalance, int role, String phone){
         this.id = id;
         this.username = username;
         this.password = password;
         this.currentBalance = currentBalance;
+        this.role = role; // Initialize role
+        this.phone = phone; // Initialize phone
     }
 
     // Getter: menyediakan akses baca ke field-field private
@@ -35,6 +38,14 @@ public class User {
 
     public BigDecimal getCurrentBalance() {
         return currentBalance;
+    }
+
+    public int getRole() {
+        return role; // Getter for role
+    }
+
+    public String getPhone() {
+        return phone; // Getter for phone
     }
 
     // Setter: menyediakan akses tulis ke currentBalance dengan pembulatan

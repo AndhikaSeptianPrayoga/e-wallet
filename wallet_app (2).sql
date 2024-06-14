@@ -56,16 +56,14 @@ INSERT INTO `transactions` (`id`, `transaction_amount`, `transaction_date`, `tra
 
 --
 -- Table structure for table `users`
---
-
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(45) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
-  `current_balance` decimal(10,2) NOT NULL
+  `current_balance` decimal(10,2) NOT NULL,
+  `role` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
 -- Dumping data for table `users`
 --
 

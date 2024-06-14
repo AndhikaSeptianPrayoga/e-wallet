@@ -15,63 +15,47 @@ public class MyJDBC { // 1. Class
     private static final String DB_PASSWORD = "";
 
     // Operasi Validasi Login
-    public static User validateLogin(String username, String password) { // 1. Method
+    public static User validateLogin(String username, String password) {
         try {
-            // membuat koneksi ke database
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
-
-            // create sql query
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT * FROM users WHERE username = ? AND password = ?"
             );
-
-            // set parameter
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-
-            // execute query
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            // next() returns true or false
-            // true - query kemungkinan mengembalikan data dan result set tidak null
-            // false -query tidak mengembalikan data dan result set null
+    
             if (resultSet.next()) {
-                // success
-                // get id
                 int userId = resultSet.getInt("id");
-
-                // get nominal balance
                 BigDecimal currentBalance = resultSet.getBigDecimal("current_balance");
-
-                // return user object
-                return new User(userId, username, password, currentBalance); // 1. Object
+                int role = resultSet.getInt("role"); // Get role
+                String phone = resultSet.getString("phone");
+                return new User(userId, username, password, currentBalance, role, phone);
             }
-
-        } catch (SQLException e) { // 8. Exception handling
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // not valid user
         return null;
     }
 
     // registers new user to the database
     // true - register success
     // false - register fails
-    public static boolean register(String username, String password) { // 1. Method
+    public static boolean register(String username, String password, String phone) { // 1. Method
         try {
             // pengecekan apakah user sudah terdaftar
             if (!checkUser(username)) {
                 Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
 
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO users(username, password, current_balance) " +
-                                "VALUES(?, ?, ?)"
+                        "INSERT INTO users(username, password, phone, current_balance) " +
+                                "VALUES(?, ?, ?, ?)"
                 );
 
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
-                preparedStatement.setBigDecimal(3, new BigDecimal(0));
+                preparedStatement.setString(3, phone);
+                preparedStatement.setBigDecimal(4, new BigDecimal(0));
 
                 preparedStatement.executeUpdate();
                 return true;
@@ -183,29 +167,31 @@ public class MyJDBC { // 1. Class
 
     // true - transfer was a success
     // false - transfer was a fail
-    public static boolean transfer(User user, String transferredUsername, float transferAmount) { // 1. Method
-        if (user.getUsername().equals(transferredUsername)) {
+    public static boolean transfer(User user, String transferredPhone, float transferAmount) { // 1. Method
+        if (user.getPhone().equals(transferredPhone)) {
             // Transaksi ke diri sendiri tidak diizinkan
             return false;
         }
-
+    
         try {
             Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD); // 14. JDBC
-
+    
             PreparedStatement queryUser = connection.prepareStatement(
-                    "SELECT * FROM users WHERE username = ?"
+                    "SELECT * FROM users WHERE phone = ?"
             );
-
-            queryUser.setString(1, transferredUsername);
+    
+            queryUser.setString(1, transferredPhone);
             ResultSet resultSet = queryUser.executeQuery();
-
+    
             if (resultSet.next()) {
                 // perform transfer
                 User transferredUser = new User(
                         resultSet.getInt("id"),
-                        transferredUsername,
+                        resultSet.getString("username"),
                         resultSet.getString("password"),
-                        resultSet.getBigDecimal("current_balance")
+                        resultSet.getBigDecimal("current_balance"),
+                        resultSet.getInt("role"),
+                        resultSet.getString("phone") // Add phone field
                     );
     
                     // create transaction
@@ -304,10 +290,12 @@ public class MyJDBC { // 1. Class
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     return new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("username"),
-                            resultSet.getString("password"),
-                            resultSet.getBigDecimal("current_balance")
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getBigDecimal("current_balance"),
+                        resultSet.getInt("role"),
+                        resultSet.getString("phone") // Add phone field
                     );
                 }
             } catch (SQLException e) { // 8. Exception handling
@@ -358,10 +346,12 @@ public class MyJDBC { // 1. Class
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     User user = new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("username"),
-                            resultSet.getString("password"),
-                            resultSet.getBigDecimal("current_balance")
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getBigDecimal("current_balance"),
+                        resultSet.getInt("role"),
+                        resultSet.getString("phone") // Add phone field
                     );
                     users.add(user);
                 }
@@ -403,10 +393,12 @@ public class MyJDBC { // 1. Class
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     return new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("username"),
-                            resultSet.getString("password"),
-                            resultSet.getBigDecimal("current_balance")
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getBigDecimal("current_balance"),
+                        resultSet.getInt("role"),
+                        resultSet.getString("phone") // Add phone field
                     );
                 }
             } catch (SQLException e) { // 8. Exception handling

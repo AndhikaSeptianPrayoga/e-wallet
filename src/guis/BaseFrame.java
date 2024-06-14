@@ -62,7 +62,7 @@ public abstract class BaseFrame extends JFrame {
 
         // set size (in pixels)
 
-        setSize(420, 600);
+        setSize(420, 700);
 
 
 

@@ -24,8 +24,7 @@ public class DashboardAppGui extends JFrame {
     private JLabel totalNominalLabel;
 
     // Konstruktor untuk menginisialisasi GUI (Constructor)
-    public DashboardAppGui() {
-        setTitle("Dashboard Admin");
+    public DashboardAppGui() {        setTitle("Dashboard Admin");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -129,6 +128,7 @@ public class DashboardAppGui extends JFrame {
         model.addColumn("Select");
         model.addColumn("ID PENGGUNA");
         model.addColumn("NAMA PENGGUNA");
+        model.addColumn("PHONE"); // New column for phone
         model.addColumn("SALDO TERKINI");
 
         table = new JTable(model);
@@ -255,7 +255,7 @@ public class DashboardAppGui extends JFrame {
         ArrayList<User> users = db.getAllUsers();
         model.setRowCount(0); // Menghapus data yang ada
         for (User user : users) {
-            model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getCurrentBalance()});
+            model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getPhone(), user.getCurrentBalance()});
         }
     }
 

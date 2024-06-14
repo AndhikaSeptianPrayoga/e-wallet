@@ -68,9 +68,22 @@ public class RegisterGui extends BaseFrame {
         rePasswordField.setFont(new Font("Dialog", Font.PLAIN, 28));
         add(rePasswordField);
 
+        // 13. Swing component: JLabel
+        JLabel phoneLabel = new JLabel("Phone:");
+        phoneLabel.setBounds(20, 400, getWidth() - 50, 24);
+        phoneLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+        phoneLabel.setForeground(CommonConstants.TEXT_COLOR);
+        add(phoneLabel);
+
+        // 13. Swing component: JTextField
+        JTextField phoneField = new JTextField();
+        phoneField.setBounds(20, 440, getWidth() - 50, 40);
+        phoneField.setFont(new Font("Dialog", Font.PLAIN, 28));
+        add(phoneField);
+
         // 13. Swing component: JButton
         JButton registerButton = new JButton("Register");
-        registerButton.setBounds(20, 460, getWidth() - 50, 40);
+        registerButton.setBounds(20, 500, getWidth() - 50, 40);
         registerButton.setFont(new Font("Dialog", Font.BOLD, 20));
         
         // 10. Listener interface: ActionListener
@@ -81,11 +94,12 @@ public class RegisterGui extends BaseFrame {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
                 String rePassword = String.valueOf(rePasswordField.getPassword());
+                String phone = phoneField.getText();
 
                 // Validate user input
-                if (validateUserInput(username, password, rePassword)) {
+                if (validateUserInput(username, password, rePassword, phone)) {
                     // 14. JDBC: Register user in the database
-                    if (MyJDBC.register(username, password)) {
+                    if (MyJDBC.register(username, password, phone)) {
                         // Registration success
                         RegisterGui.this.dispose();
                         LoginGui loginGui = new LoginGui();
@@ -107,7 +121,7 @@ public class RegisterGui extends BaseFrame {
 
         // 13. Swing component: JLabel with HTML link
         JLabel loginLabel = new JLabel("<html><a href=\"#\">Have an account? Sign-in here</a></html>");
-        loginLabel.setBounds(0, 510, getWidth() - 10, 30);
+        loginLabel.setBounds(0, 550, getWidth() - 10, 30);
         loginLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
         loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -124,8 +138,8 @@ public class RegisterGui extends BaseFrame {
     }
 
     // 2. Encapsulation: Private method to validate user input
-    private boolean validateUserInput(String username, String password, String rePassword) {
-        if (username.length() == 0 || password.length() == 0 || rePassword.length() == 0) return false;
+    private boolean validateUserInput(String username, String password, String rePassword, String phone) {
+        if (username.length() == 0 || password.length() == 0 || rePassword.length() == 0 || phone.length() == 0) return false;
         if (username.length() < 6) return false;
         if (!password.equals(rePassword)) return false;
         return true;
