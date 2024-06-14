@@ -1,7 +1,7 @@
 package guis;
 
-import constants.CommonConstants;
 import db_objs.MyJDBC;
+import java.math.BigInteger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,59 +10,71 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-// 1. Class and Object: This is a class definition for RegisterGui which extends BaseFrame
 public class RegisterGui extends BaseFrame {
-
-    // 1. Constructor: Initializes the RegisterGui object
     public RegisterGui() {
         super("Wallet Mahasiswa Register");
+        setSize(420, 600);
     }
 
-    // 4. Superclass and Subclass: This method overrides a method from the superclass BaseFrame
     @Override
     protected void addGuiComponents() {
-        // 13. Swing component: JLabel
-        JLabel bankingAppLabel = new JLabel("Register Wallet Mahasiswa");
-        bankingAppLabel.setBounds(0, 20, super.getWidth(), 40);
-        bankingAppLabel.setFont(new Font("Dialog", Font.BOLD, 32));
-        bankingAppLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        bankingAppLabel.setForeground(CommonConstants.TEXT_COLOR);
-        add(bankingAppLabel);
+        // Container Panel
+        JPanel container = new JPanel();
+        container.setLayout(null);
+        container.setBackground(Color.WHITE);
+        container.setBounds(0, 0, 420, 600);
+        add(container);
 
-        // 13. Swing component: JLabel
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setBounds(20, 120, getWidth() - 30, 24);
-        usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-        usernameLabel.setForeground(CommonConstants.TEXT_COLOR);
-        add(usernameLabel);
+        // Title label
+        JLabel titleLabel = new JLabel("Create Account");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setBounds(85, 20, 250, 40);
+        titleLabel.setForeground(Color.BLACK);
+        container.add(titleLabel);
 
-        // 13. Swing component: JTextField
+        // Subtext label
+        JLabel subtextLabel = new JLabel("I Am A New User");
+        subtextLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtextLabel.setBounds(85, 60, 250, 20);
+        subtextLabel.setForeground(Color.BLACK);
+        container.add(subtextLabel);
+
+        // Username label
+        JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        usernameLabel.setBounds(50, 100, 250, 20);
+        usernameLabel.setForeground(Color.BLACK);
+        container.add(usernameLabel);
+
+        // Username field
         JTextField usernameField = new JTextField();
-        usernameField.setBounds(20, 160, getWidth() - 50, 40);
-        usernameField.setFont(new Font("Dialog", Font.PLAIN, 28));
-        add(usernameField);
+        usernameField.setBounds(50, 130, 320, 40);
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 18));
+        usernameField.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        container.add(usernameField);
 
-        // 13. Swing component: JLabel
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setBounds(20, 220, getWidth() - 50, 24);
-        passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-        passwordLabel.setForeground(CommonConstants.TEXT_COLOR);
-        add(passwordLabel);
+        // Password label
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        passwordLabel.setBounds(50, 180, 250, 20);
+        passwordLabel.setForeground(Color.BLACK);
+        container.add(passwordLabel);
 
-        // 13. Swing component: JPasswordField
+        // Password field
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setBounds(20, 260, getWidth() - 50, 40);
-        passwordField.setFont(new Font("Dialog", Font.PLAIN, 28));
-        add(passwordField);
+        passwordField.setBounds(50, 210, 320, 40);
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 18));
+        passwordField.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        container.add(passwordField);
 
-        // 13. Swing component: JLabel
-        JLabel rePasswordLabel = new JLabel("Re-type Password:");
-        rePasswordLabel.setBounds(20, 320, getWidth() - 50, 40);
-        rePasswordLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-        rePasswordLabel.setForeground(CommonConstants.TEXT_COLOR);
-        add(rePasswordLabel);
+        // Re-type Password label
+        JLabel rePasswordLabel = new JLabel("Re-type Password");
+        rePasswordLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        rePasswordLabel.setBounds(50, 260, 250, 20);
+        rePasswordLabel.setForeground(Color.BLACK);
+        container.add(rePasswordLabel);
 
-        // 13. Swing component: JPasswordField
+        // Re-type Password field
         JPasswordField rePasswordField = new JPasswordField();
         rePasswordField.setBounds(20, 360, getWidth() - 50, 40);
         rePasswordField.setFont(new Font("Dialog", Font.PLAIN, 28));
@@ -90,9 +102,11 @@ public class RegisterGui extends BaseFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 11. Action event: Handling button click
+                // get username
                 String username = usernameField.getText();
+                // get password
                 String password = String.valueOf(passwordField.getPassword());
+                // get re-password
                 String rePassword = String.valueOf(rePasswordField.getPassword());
                 String phone = phoneField.getText();
 
@@ -106,18 +120,16 @@ public class RegisterGui extends BaseFrame {
                         loginGui.setVisible(true);
                         JOptionPane.showMessageDialog(loginGui, "Registrasi Berhasil! Silahkan Login");
                     } else {
-                        // Registration failed
-                        JOptionPane.showMessageDialog(RegisterGui.this, "Error: Username telah digunakan!");
+                        JOptionPane.showMessageDialog(RegisterGui.this, "Error: Username atau nomor telepon telah digunakan!");
                     }
                 } else {
-                    // Invalid user input
                     JOptionPane.showMessageDialog(RegisterGui.this,
                             "Error: username minimal memiliki 6 karakter\n" +
-                            "and/or Password tidak sama!");
+                                    "and/or Password tidak sama!");
                 }
             }
         });
-        add(registerButton);
+        container.add(registerButton);
 
         // 13. Swing component: JLabel with HTML link
         JLabel loginLabel = new JLabel("<html><a href=\"#\">Have an account? Sign-in here</a></html>");
@@ -129,19 +141,29 @@ public class RegisterGui extends BaseFrame {
         loginLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 11. Action event: Handling label click
                 RegisterGui.this.dispose();
                 new LoginGui().setVisible(true);
             }
         });
-        add(loginLabel);
+        container.add(loginLabel);
     }
 
     // 2. Encapsulation: Private method to validate user input
     private boolean validateUserInput(String username, String password, String rePassword, String phone) {
         if (username.length() == 0 || password.length() == 0 || rePassword.length() == 0 || phone.length() == 0) return false;
         if (username.length() < 6) return false;
+        // password and re-password must be the same
         if (!password.equals(rePassword)) return false;
+        // passes validation
         return true;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new RegisterGui().setVisible(true);
+            }
+        });
     }
 }

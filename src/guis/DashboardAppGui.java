@@ -45,10 +45,10 @@ public class DashboardAppGui extends JFrame {
         navPanel.add(logoLabel);
 
         // Tombol CRUD (Swing component, CRUD)
-        JButton createButton = new JButton("Menambah Data");
-        JButton readButton = new JButton("Melihat Transaksi");
-        JButton updateButton = new JButton("Mengubah Data");
-        JButton deleteButton = new JButton("Menghapus Data");
+        JButton createButton = new JButton("Menambah Data User");
+        JButton readButton = new JButton("Melihat Transaksi User");
+        JButton updateButton = new JButton("Mengubah Data User");
+        JButton deleteButton = new JButton("Menghapus Data User");
         JButton refreshButton = new JButton("Refresh");
 
         Dimension buttonSize = new Dimension(200, 40);
@@ -255,7 +255,7 @@ public class DashboardAppGui extends JFrame {
         ArrayList<User> users = db.getAllUsers();
         model.setRowCount(0); // Menghapus data yang ada
         for (User user : users) {
-            model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getPhone(), user.getCurrentBalance()});
+            model.addRow(new Object[]{false, user.getId(), user.getUsername(), user.getPhone(), "Rp." + String.format("%,.2f", user.getCurrentBalance()).replace(',', '.')});
         }
     }
 
