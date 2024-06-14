@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
+
 public class RegisterGui extends BaseFrame {
     public RegisterGui() {
         super("Wallet Mahasiswa Register");
@@ -84,7 +86,7 @@ public class RegisterGui extends BaseFrame {
         JLabel phoneLabel = new JLabel("Phone:");
         phoneLabel.setBounds(20, 400, getWidth() - 50, 24);
         phoneLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-        phoneLabel.setForeground(CommonConstants.TEXT_COLOR);
+        phoneLabel.setForeground(Color.BLACK);
         add(phoneLabel);
 
         // 13. Swing component: JTextField

@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.ActionListener;
 
+import guis.DashboardAppGui;
+
 
 
 /*
@@ -34,7 +36,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
     private JTextField currentBalanceField;
 
-
+    private DashboardAppGui dashboardAppGui;
 
     // 3. Getters and setters: Example of a getter method for currentBalanceField.
 
@@ -52,11 +54,14 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
     }
 
-
+    
 
     @Override
 
     protected void addGuiComponents() {
+
+        // dashboardAppGui.loadData();
+        // dashboardAppGui.loadStats();
 
         // 13. Swing component: Creating and customizing a JButton for logout.
 
@@ -319,5 +324,9 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         // make the app dialog visible
         bankingAppDialog.setVisible(true);
+
+        // Load data and stats after each action
+//        dashboardAppGui.loadData();
+//        dashboardAppGui.loadStats();
     }
 }

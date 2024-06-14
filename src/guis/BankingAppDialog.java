@@ -148,6 +148,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             // create transaction amount label
             JLabel transactionAmountLabel = new JLabel(String.valueOf(pastTransaction.getTransactionAmount()));
             transactionAmountLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+            transactionAmountLabel.setText("Rp." + String.format("%,.2f", pastTransaction.getTransactionAmount()).replace(',', '.'));
 
             // create a panel to hold all components horizontally
             JPanel fullWidthPanel = new JPanel();

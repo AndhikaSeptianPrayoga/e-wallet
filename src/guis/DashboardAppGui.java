@@ -181,6 +181,8 @@ public class DashboardAppGui extends JFrame {
                 CreateUserDialog createUserDialog = new CreateUserDialog(null, "Create User", true);
                 createUserDialog.setLocationRelativeTo(null);
                 createUserDialog.setVisible(true);
+                loadData();
+                loadStats();
             }
         });
 
@@ -195,6 +197,8 @@ public class DashboardAppGui extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Pilih baris untuk melihat transaksi");
                 }
+                loadData();
+                loadStats();
             }
         });
 
@@ -209,6 +213,8 @@ public class DashboardAppGui extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Pilih baris untuk diupdate");
                 }
+                loadData();
+                loadStats();
             }
         });
 
@@ -225,12 +231,15 @@ public class DashboardAppGui extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Pilih baris untuk dihapus");
                 }
+                loadData();
+                loadStats();
             }
         });
 
         refreshButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadData(); // Memuat ulang data dari database
+                loadStats();
             }
         });
 
@@ -251,7 +260,7 @@ public class DashboardAppGui extends JFrame {
     }
 
     // Memuat data dari database (Method, CRUD)
-    private void loadData() {
+    public void loadData() {
         ArrayList<User> users = db.getAllUsers();
         model.setRowCount(0); // Menghapus data yang ada
         for (User user : users) {
@@ -260,14 +269,14 @@ public class DashboardAppGui extends JFrame {
     }
 
     // Memuat statistik dari database (Method, CRUD)
-    private void loadStats() {
+    public void loadStats() {
         int totalTransactions = db.getTotalTransactions();
         int totalUsers = db.getTotalUsers();
         BigDecimal totalNominal = db.getTotalNominal();
 
         totalTransactionsLabel.setText("Total Transaksi: " + totalTransactions);
         totalUsersLabel.setText("Jumlah Users: " + totalUsers);
-        totalNominalLabel.setText("Total Nominal: " + totalNominal);
+        totalNominalLabel.setText("Total Nominal: Rp." + String.format("%,.2f", totalNominal).replace(',', '.'));
     }
 
     // Kelas untuk dialog update user (Inner class, Swing component)
@@ -314,6 +323,8 @@ public class DashboardAppGui extends JFrame {
                 balanceField.setText(user.getCurrentBalance().toString());
                 passwordField.setText("");
             }
+        loadData();
+        loadStats();
         }
     }
 
@@ -354,6 +365,8 @@ public class DashboardAppGui extends JFrame {
                 }
             });
             add(saveButton);
+            loadData();
+            loadStats();
         }
     }
 
@@ -379,6 +392,8 @@ public class DashboardAppGui extends JFrame {
             add(scrollPane, BorderLayout.CENTER);
 
             loadTransactionData(userId);
+            loadData();
+            loadStats();
         }
 
         // Memuat data transaksi (Method, CRUD)
@@ -393,6 +408,8 @@ public class DashboardAppGui extends JFrame {
                     transaction.getUserId()
                 });
             }
+            loadData();
+            loadStats();
         }
     }
 
